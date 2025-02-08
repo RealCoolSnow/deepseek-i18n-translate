@@ -32,23 +32,34 @@ echo '{
 pnpm add typescript ts-node @types/node https-proxy-agent node-fetch@2 @types/node-fetch@2
 
 # 复制翻译脚本到临时目录
-cp "${SCRIPT_DIR}/translate-i18n.ts" ./
+cp "${SCRIPT_DIR}/translate-i18n.ts" "$TEMP_DIR/"
 
 # 创建 tsconfig.json
 echo '{
   "compilerOptions": {
     "target": "ES2020",
-    "module": "commonjs",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowJs": true,
+    "resolveJsonModule": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   }
 }' > tsconfig.json
 
+# 设置默认环境变量（如果未设置）
+export SOURCE_DIR=${SOURCE_DIR:-"./locales/en"}
+export TARGET_BASE_DIR=${TARGET_BASE_DIR:-"./locales"}
+
 # 运行翻译脚本
-SOURCE_DIR="$SOURCE_DIR" TARGET_BASE_DIR="$TARGET_BASE_DIR" DEEPSEEK_API_KEY=$DEEPSEEK_API_KEY npx ts-node translate-i18n.ts
+SOURCE_DIR="$SOURCE_DIR" TARGET_BASE_DIR="$TARGET_BASE_DIR" DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" npx ts-node --esm translate-i18n.ts
 
 # 清理临时目录
 cd "${SCRIPT_DIR}"
