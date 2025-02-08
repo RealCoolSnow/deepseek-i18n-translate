@@ -24,8 +24,7 @@ const proxyUrl = process.env.HTTPS_PROXY || '';
 const agent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined;
 
 // 添加日志文件路径
-const LOG_FILE = path.join(__dirname, 'translation-log.txt');
-
+const LOG_FILE = path.join(__dirname, '../translation-log.txt');
 async function logTranslation(original: string, translated: string, path: string) {
   const key = path.split('.').pop() || path;
   const logEntry = `Key: ${key}
@@ -135,6 +134,7 @@ async function translateText(text: string, targetLang: string, path: string = ''
 
     const data = await response.json();
     if (!response.ok || !data.choices?.[0]?.message?.content) {
+      console.log('deepseek response error', data);
       await logTranslation(text, text, path);
       return text;
     }
