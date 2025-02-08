@@ -9,11 +9,17 @@ const LOCALES = [
 const SOURCE_DIR = path.resolve(process.env.SOURCE_DIR || '');
 const TARGET_BASE_DIR = path.resolve(process.env.TARGET_BASE_DIR || '');
 
+if (!process.env.DEEPSEEK_API_KEY) {
+  console.error('Error: DEEPSEEK_API_KEY environment variable must be set');
+  process.exit(1);
+}
+
 // 添加运行时检查
 if (!process.env.SOURCE_DIR || !process.env.TARGET_BASE_DIR) {
   console.error('Error: SOURCE_DIR and TARGET_BASE_DIR environment variables must be set');
   process.exit(1);
 }
+
 // 语言代码映射
 const LANGUAGE_MAP: Record<string, string> = {
   'zh': 'Chinese Simplified',

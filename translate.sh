@@ -4,9 +4,22 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # 加载 .env 文件
+echo "=== 开始加载 .env 文件 ==="
 if [ -f "${SCRIPT_DIR}/.env" ]; then
-  export $(cat "${SCRIPT_DIR}/.env" | grep -v '^#' | xargs)
+  while IFS='=' read -r key value; do
+    # 去除首尾空格和引号，并处理行内注释
+    key=$(echo "$key" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//')
+    value=$(echo "$value" | sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//')
+    
+    if [[ ! -z "$key" && ! "$key" =~ ^# ]]; then
+      export "$key"="$value"
+      echo "[ENV] 已加载: $key='$value'"
+    fi
+  done < "${SCRIPT_DIR}/.env"
+else
+  echo "警告: 未找到 .env 文件"
 fi
+echo "=== 完成加载 .env 文件 ==="
 
 # 检查环境变量
 if [ -z "$DEEPSEEK_API_KEY" ]; then
@@ -53,6 +66,12 @@ echo '{
     }
   }
 }' > tsconfig.json
+# 在设置默认值前添加调试信息
+echo "=== 环境变量检查 ==="
+echo "DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-(未设置)}"
+echo "SOURCE_DIR: ${SOURCE_DIR:-(未设置)}"
+echo "TARGET_BASE_DIR: ${TARGET_BASE_DIR:-(未设置)}"
+echo "HTTPS_PROXY: ${HTTPS_PROXY:-(未设置)}"
 
 # 设置默认环境变量（如果未设置）
 if [ -z "$SOURCE_DIR" ]; then

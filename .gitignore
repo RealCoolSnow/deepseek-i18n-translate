@@ -1,3 +1,4 @@
 .env
 temp_translate
 translation-log.txt
+locales/zh/hello.json
