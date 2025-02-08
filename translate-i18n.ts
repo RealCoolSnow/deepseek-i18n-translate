@@ -3,9 +3,7 @@ import * as path from 'path';
 import fetch from 'node-fetch';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
-const LOCALES = [
-  'zh',    // 简体中文 (CN)
-];
+const LOCALES = process.env.TARGET_LANGS?.split(',').map(lang => lang.trim()) || [];
 const SOURCE_DIR = path.resolve(process.env.SOURCE_DIR || '');
 const TARGET_BASE_DIR = path.resolve(process.env.TARGET_BASE_DIR || '');
 
@@ -22,7 +20,11 @@ if (!process.env.SOURCE_DIR || !process.env.TARGET_BASE_DIR) {
 
 // 语言代码映射
 const LANGUAGE_MAP: Record<string, string> = {
-  'zh': 'Chinese Simplified',
+  'zh': '简体中文',
+  'ja': '日本語',
+  'ko': '한국어',
+  'fr': 'Français',
+  'es': 'Español'
 };
 
 // 创建代理 agent
@@ -85,7 +87,7 @@ async function translateText(text: string, targetLang: string, path: string = ''
           messages: [
           {
             role: 'system',
-            content: `你是一个专业的网页翻译专家，负责将英文界面文本翻译成简体中文。请遵循以下规则：
+            content: `你是一个专业的网页翻译专家，负责将英文界面文本翻译成${LANGUAGE_MAP[targetLang] || targetLang}。请遵循以下规则：
 
 1. 保持简洁专业的UI翻译风格
 2. 保留所有技术术语和变量不变
@@ -93,37 +95,9 @@ async function translateText(text: string, targetLang: string, path: string = ''
 4. 保持标点符号与原文一致
 5. 如果不确定翻译，返回空字符串
 
-常见UI翻译示例：
-"Subscription canceled" -> "订阅已取消"
-"Your subscription is scheduled to be canceled on {{- endDate }}." -> "您的订阅将于 {{- endDate }} 取消"
-"Thank you for subscribing" -> "感谢订阅"
-"All" -> "全部"
-"Details" -> "详情"
-"Settings" -> "设置"
-"Log" -> "日志"
-"Actions" -> "操作"
-"Status" -> "状态"
-"Active" -> "活跃"
-"Inactive" -> "未激活"
-"Loading..." -> "加载中..."
-"Error" -> "错误"
-"Success" -> "成功"
-"Warning" -> "警告"
-"Info" -> "信息"
-"Close" -> "关闭"
-"Save" -> "保存"
-"Cancel" -> "取消"
-"Delete" -> "删除"
-"Edit" -> "编辑"
-"View" -> "查看"
-"Next" -> "下一步"
-"Previous" -> "上一步"
-"Back" -> "返回"
-"Continue" -> "继续"
-"Finish" -> "完成"
-"Start" -> "开始"
-"Submit" -> "提交"
-"Reset" -> "重置"`
+常见翻译示例：
+${getLanguageExamples(targetLang)}
+`
           },
           {
             role: 'user',
@@ -169,6 +143,25 @@ async function translateText(text: string, targetLang: string, path: string = ''
     await logTranslation(text, text, path);
     return text;
   }
+}
+
+// 添加示例生成函数
+function getLanguageExamples(targetLang: string): string {
+  const examples: Record<string, string> = {
+    'zh': `
+"Subscription canceled" -> "订阅已取消"
+"Your subscription is scheduled to be canceled on {{- endDate }}." -> "您的订阅将于 {{- endDate }} 取消"
+"Thank you for subscribing" -> "感谢订阅"`,
+    'ja': `
+"Subscription canceled" -> "サブスクリプションがキャンセルされました"
+"Your subscription is scheduled to be canceled on {{- endDate }}." -> "サブスクリプションは {{- endDate }} にキャンセルされます"
+"Thank you for subscribing" -> "ご登録ありがとうございます"`,
+    'ko': `
+"Subscription canceled" -> "구독이 취소되었습니다"
+"Your subscription is scheduled to be canceled on {{- endDate }}." -> "구독은 {{- endDate }}에 취소될 예정입니다"
+"Thank you for subscribing" -> "구독해 주셔서 감사합니다"`
+  };
+  return examples[targetLang] || '';
 }
 
 async function translateObject(

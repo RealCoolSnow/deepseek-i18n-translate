@@ -2,3 +2,5 @@
 temp_translate
 translation-log.txt
 locales/zh/hello.json
+locales/ko/hello.json
+locales/ja/hello.json

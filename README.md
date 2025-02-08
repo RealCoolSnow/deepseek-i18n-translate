@@ -20,8 +20,9 @@ A CLI tool for automating UI text translations using DeepSeek's API. Preserves c
 1. Copy `.env.example` to `.env`:
 ```env
 DEEPSEEK_API_KEY=your-api-key-here
-SOURCE_DIR=./locales/en # Source directory for en locale files
-TARGET_BASE_DIR=./locales # Target base directory for translated files
+SOURCE_DIR=./locales/en # Source directory
+TARGET_BASE_DIR=./locales # Target directory
+TARGET_LANGS=zh,ja,ko # Comma-separated language codes
 # Optional proxy:
 # HTTPS_PROXY=http://127.0.0.1:7890
 ```

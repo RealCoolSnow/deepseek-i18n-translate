@@ -29,6 +29,13 @@ if [ -z "$DEEPSEEK_API_KEY" ]; then
   exit 1
 fi
 
+# 检查目标语言配置
+if [ -z "$TARGET_LANGS" ]; then
+  echo "Error: TARGET_LANGS environment variable must be set"
+  echo "Example: TARGET_LANGS=zh,ja,ko"
+  exit 1
+fi
+
 # 创建临时目录
 TEMP_DIR="${SCRIPT_DIR}/temp_translate"
 mkdir -p "$TEMP_DIR"

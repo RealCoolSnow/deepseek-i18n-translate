@@ -20,6 +20,7 @@
 DEEPSEEK_API_KEY=你的API密钥
 SOURCE_DIR=./locales/en # 英文源文件目录
 TARGET_BASE_DIR=./locales # 翻译文件输出目录
+TARGET_LANGS=zh,ja,ko # 目标语言代码，逗号分隔
 # 如需代理请取消注释：
 # HTTPS_PROXY=http://127.0.0.1:7890
 ```
