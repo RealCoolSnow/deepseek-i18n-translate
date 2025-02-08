@@ -1,5 +1,7 @@
 # DeepSeek i18n Translation Toolkit
 
+[中文文档](README_zh.md) | [English Version](README.md)
+
 A CLI tool for automating UI text translations using DeepSeek's API. Preserves code formatting while translating JSON locale files.
 
 ## Features
