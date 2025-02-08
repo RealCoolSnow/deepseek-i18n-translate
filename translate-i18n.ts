@@ -14,7 +14,6 @@ if (!process.env.SOURCE_DIR || !process.env.TARGET_BASE_DIR) {
   console.error('Error: SOURCE_DIR and TARGET_BASE_DIR environment variables must be set');
   process.exit(1);
 }
-
 // 语言代码映射
 const LANGUAGE_MAP: Record<string, string> = {
   'zh': 'Chinese Simplified',
@@ -22,7 +21,7 @@ const LANGUAGE_MAP: Record<string, string> = {
 
 // 创建代理 agent
 const proxyUrl = process.env.HTTPS_PROXY || '';
-const proxyAgent = new HttpsProxyAgent(proxyUrl);
+const agent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined;
 
 // 添加日志文件路径
 const LOG_FILE = path.join(__dirname, 'translation-log.txt');
@@ -71,7 +70,7 @@ async function translateText(text: string, targetLang: string, path: string = ''
 
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
         method: 'POST',
-        agent: proxyAgent,
+        agent,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
