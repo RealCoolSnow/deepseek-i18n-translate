@@ -6,8 +6,14 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 const LOCALES = [
   'zh',    // 简体中文 (CN)
 ];
-const SOURCE_DIR = path.resolve(process.env.SOURCE_DIR || './locales/en');
-const TARGET_BASE_DIR = path.resolve(process.env.TARGET_BASE_DIR || './locales');
+const SOURCE_DIR = path.resolve(process.env.SOURCE_DIR || '');
+const TARGET_BASE_DIR = path.resolve(process.env.TARGET_BASE_DIR || '');
+
+// 添加运行时检查
+if (!process.env.SOURCE_DIR || !process.env.TARGET_BASE_DIR) {
+  console.error('Error: SOURCE_DIR and TARGET_BASE_DIR environment variables must be set');
+  process.exit(1);
+}
 
 // 语言代码映射
 const LANGUAGE_MAP: Record<string, string> = {

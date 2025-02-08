@@ -55,11 +55,22 @@ echo '{
 }' > tsconfig.json
 
 # 设置默认环境变量（如果未设置）
-export SOURCE_DIR=${SOURCE_DIR:-"./locales/en"}
-export TARGET_BASE_DIR=${TARGET_BASE_DIR:-"./locales"}
+if [ -z "$SOURCE_DIR" ]; then
+  SOURCE_DIR="${SCRIPT_DIR}/locales/en"
+  echo "Using default SOURCE_DIR: $SOURCE_DIR"
+fi
+
+if [ -z "$TARGET_BASE_DIR" ]; then
+  TARGET_BASE_DIR="${SCRIPT_DIR}/locales"
+  echo "Using default TARGET_BASE_DIR: $TARGET_BASE_DIR"
+fi
+
+# 确保目录存在
+mkdir -p "$SOURCE_DIR"
+mkdir -p "$TARGET_BASE_DIR"
 
 # 运行翻译脚本
-SOURCE_DIR="$SOURCE_DIR" TARGET_BASE_DIR="$TARGET_BASE_DIR" DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" npx ts-node --esm translate-i18n.ts
+SOURCE_DIR="$SOURCE_DIR" TARGET_BASE_DIR="$TARGET_BASE_DIR" DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" npx ts-node translate-i18n.ts
 
 # 清理临时目录
 cd "${SCRIPT_DIR}"
