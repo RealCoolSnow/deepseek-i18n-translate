@@ -48,7 +48,7 @@ echo '{
 }' > tsconfig.json
 
 # 运行翻译脚本
-DEEPSEEK_API_KEY=$DEEPSEEK_API_KEY npx ts-node translate-i18n.ts
+SOURCE_DIR="$SOURCE_DIR" TARGET_BASE_DIR="$TARGET_BASE_DIR" DEEPSEEK_API_KEY=$DEEPSEEK_API_KEY npx ts-node translate-i18n.ts
 
 # 清理临时目录
 cd "${SCRIPT_DIR}"

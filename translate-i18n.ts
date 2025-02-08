@@ -6,7 +6,6 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 const LOCALES = [
   'zh',    // 简体中文 (CN)
 ];
-
 const SOURCE_DIR = path.resolve(process.env.SOURCE_DIR);
 const TARGET_BASE_DIR = path.resolve(process.env.TARGET_BASE_DIR);
 
@@ -64,16 +63,16 @@ async function translateText(text: string, targetLang: string, path: string = ''
         return placeholder;
       });
 
-    const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
-      method: 'POST',
-      agent: proxyAgent,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.ZHIPU_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'glm-4-flash',
-        messages: [
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        agent: proxyAgent,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: [
           {
             role: 'system',
             content: `你是一个专业的网页翻译专家，负责将英文界面文本翻译成简体中文。请遵循以下规则：
